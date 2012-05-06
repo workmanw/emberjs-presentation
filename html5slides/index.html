@@ -48,7 +48,8 @@
           May 9th, 2012
         </p>
       </article>
-      
+
+
 			<!-- *************************************************** -->
 			<!--  Overview                                           -->
 			<!-- *************************************************** -->
@@ -72,6 +73,7 @@
 				</ul>
       </article>
 
+
 			<!-- *************************************************** -->
 			<!--  Basic object orientation                           -->
 			<!-- *************************************************** -->
@@ -93,7 +95,8 @@ person.get('firstName'); // Alan
 person.get('lastName');  // Turing
 				</pre>
       </article>
-      
+
+
 			<!-- *************************************************** -->
 			<!--  Subclasses                                         -->
 			<!-- *************************************************** -->
@@ -122,6 +125,7 @@ person.fullName(); // Alan Turing
 				</pre>
       </article>
 
+
       <!-- *************************************************** -->
 			<!--  init && sc_super()                                 -->
 			<!-- *************************************************** -->
@@ -144,7 +148,8 @@ MyApp.Person = Ember.Object.extend({
 var person = MyApp.Person.create(); // person created
 				</pre>
       </article>
-      
+
+
       <!-- *************************************************** -->
 			<!--  Mixins                                             -->
 			<!-- *************************************************** -->
@@ -169,7 +174,8 @@ var person = App.Person.create(<strong>MyApp.Friendly</strong>, {
 person.sayHello(); // Hello, my name is Bob 
 				</pre>
       </article>
-      
+
+
       <!-- *************************************************** -->
 			<!--  KVO                                                -->
 			<!-- *************************************************** -->
@@ -190,6 +196,7 @@ obj.set('name', 'Bob');
 obj.get('name'); // Bob
 				</pre>
       </article>
+
 
       <!-- *************************************************** -->
 			<!--  KVO - Bindings                                     -->
@@ -217,6 +224,7 @@ App.mainView.set('user', 'Jim');
 console.log(App.userController.get('name')); // Jim</pre>
       </article>
       
+      
       <!-- *************************************************** -->
 			<!--  KVO - Computed Properties                          -->
 			<!-- *************************************************** -->
@@ -243,6 +251,7 @@ person.set('lastName', 'Smith');
 person.get('fullName'); // Alan Smith </pre>
       </article>
       
+      
       <!-- *************************************************** -->
 			<!--  KVO - Observers                                    -->
 			<!-- *************************************************** -->
@@ -268,6 +277,99 @@ var person = App.Person.create({
 person.set('lastName','Smith'); // 'The Name changed!'
 person.set('firstName','Bob');  // 'The Name changed!' </pre>
       </article>
+
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars Templates                               -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Handlebars Templates</h1>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Creating Template part 1              -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Creating a template (part 1)
+        </h3>
+        <ul>
+          <li>Templates are HTML with embedded expressions.</li>
+          <li>At runtime, Ember will compile these templates so they are available for you to use in your views.</li>
+          <li>The <code>data-template-name</code> attribute will be used to access the template later.</li>
+        </ul>
+				<pre class="prettyprint">
+&lt;script type="text/x-handlebars" data-template-name="user-page"&gt;
+  Hello, &lt;b&gt;{{MyApp.userController.name}}&lt;/b&gt;
+  {{#if hasMessages}}
+    You have {{unreadCount}} unread messages.
+  {{/else}}
+    There are no new messages.
+  {{/if}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Creating Template part 2              -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Creating a template (part 2)
+        </h3>
+        <ul>
+          <li>Building a view object using that template.</li>
+        </ul>
+				<pre class="prettyprint">
+var view = Ember.View.create({
+  templateName: 'user-page',
+  unreadCount: 6,
+  hasMessages: function() {
+    return this.get('unreadCount') > 0;
+  }.property('unreadCount').cacheable()
+});
+
+// Append the view to the document as a child of '#container'
+view.appendTo('#container');
+// Append the view to the document body
+view.append();
+// Remove the view from the document
+view.remove();</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Binding element attributes            -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Binding element attributes
+        </h3>
+        <ul>
+          <li>Templates can bind to HTML attributes.</li>
+        </ul>
+				<pre class="prettyprint">
+App.LogoView = Ember.View.extend({
+  logoUrl: 'http://www.mycorp.com/images/logo.png',
+  isSelected: true
+});</pre>
+
+<pre class="prettyprint">
+&lt;div id="logo" {{bindAttr class="isSelected"}}&gt;
+  &lt;img {{bindAttr src="logoUrl"}} alt="Logo"&gt;
+&lt;/div&gt;</pre>
+
+<pre class="prettyprint">
+&lt;!-- Output --&gt;
+&lt;div id="logo" class="is-selected"&gt;
+  &lt;img src="http://www.mycorp.com/images/logo.png" alt="Logo"&gt;
+&lt;/div&gt;</pre>
+      </article>
+      
+      
+      
+      
       
       <article class='smaller'>
         <h3>
