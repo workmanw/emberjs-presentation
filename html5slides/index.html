@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>Presentation</title>
+
+    <meta charset='utf-8'>
+    <script
+      src='assets/slides.js'></script>
+  </head>
+  
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+    
+    
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+      
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+        
+      <article>
+        <h1>
+          Crash course in Ember.js
+          <br>
+          Cincy JS Meetup
+					<br><br>
+        </h1>
+        <p>
+          Wesley Workman
+          <br>
+          May 9th, 2012
+        </p>
+      </article>
+      
+			<!-- *************************************************** -->
+			<!--  Overview                                           -->
+			<!-- *************************************************** -->
+      <article>
+				<h3>Overview</h3>
+
+      	<ul>
+					<li>Core fundaments</li>
+					<li>Handlebars Templates</li>
+					<li>Views in depth</li>
+					<li>Controller Layer</li>
+					<ul>
+						<li>Meditating Controllers (Ember.ArrayController)</li>
+						<li>Coordinating Controllers (Ember.StateManager)</li>
+					</ul>
+					<li>Model Layer</li>
+					<ul>
+						<li>Basics (Ember.Object)</li>
+						<li>Ember Data</li>
+					</ul>
+				</ul>
+      </article>
+
+			<!-- *************************************************** -->
+			<!--  Basic object orientation                           -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <ul>
+          <li>Traditional object-oriented structure</li>
+          <li>Root object, Ember.Object, contains all basic features needed by Ember.</li>
+        </ul>
+				<pre class="prettyprint">
+var person = Ember.Object.create({
+  firstName: 'Alan',
+  lastName:  'Turing'
+});
+
+person.get('firstName'); // Alan
+person.get('lastName');  // Turing
+				</pre>
+      </article>
+      
+			<!-- *************************************************** -->
+			<!--  Subclasses                                         -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <p>
+          Subclasses can be created with <strong>.extend()</strong>
+        </p>
+				<pre class="prettyprint">
+MyApp.Person = Ember.Object.extend({   
+  firstName: '',
+  lastName:  '',
+  fullName: function() {
+    return this.get('firstName') + ' ' + this.get('lastName');
+  }
+});
+
+var person = MyApp.Person.create({
+  firstName: 'Alan',
+  lastName: 'Turing'
+});
+
+person.fullName(); // Alan Turing
+				</pre>
+      </article>
+
+      <!-- *************************************************** -->
+			<!--  init && sc_super()                                 -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <ul>
+          <li>When an Ember.Object instance is created, the init method is called.</li>
+          <li><strong>this._super();</strong> method calls original function. Similar to the super method in Ruby / Java.</li>
+        </ul>
+				<pre class="prettyprint">
+MyApp.Person = Ember.Object.extend({
+  init: function() {
+    this._super(); // Calls Ember.Object.init
+    console.log(‘person created’);
+  }
+});
+
+var person = MyApp.Person.create(); // person created
+				</pre>
+      </article>
+      
+      <!-- *************************************************** -->
+			<!--  Mixins                                             -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <ul>
+          <li>Use of ‘mixins’ allows multiple classes that don’t share an inheritance tree to have common code. Loosely enforced prototypes.</li>
+        </ul>
+				<pre class="prettyprint">
+MyApp.Friendly = {
+  sayHello: function() {
+    return 'Hello, my name is ' + this.get('name');
+  }
+};
+
+var person = App.Person.create(<strong>MyApp.Friendly</strong>, {
+  name: 'Bob'
+});
+
+person.sayHello(); // Hello, my name is Bob 
+				</pre>
+      </article>
+      
+      <!-- *************************************************** -->
+			<!--  KVO                                                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Getters / Setters
+        </h3>
+        <ul>
+          <li>Properties should never be accessed directly. Always use .get() and .set().</li>
+        </ul>
+				<pre class="prettyprint">
+var obj = Ember.Object.create({
+  name: 'Jim'
+});
+
+obj.get('name'); // Jim
+obj.set('name', 'Bob');
+obj.get('name'); // Bob
+				</pre>
+      </article>
+
+      <!-- *************************************************** -->
+			<!--  KVO - Bindings                                     -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Bindings
+        </h3>
+        <ul>
+          <li>Bindings keep two properties, on different objects, in sync with each other.</li>
+        </ul>
+				<pre class="prettyprint">
+MyApp.userController = Ember.Object.create({
+  name: null
+});
+
+MyApp.mainView = Ember.View.create({
+  userBinding: <strong>Ember.Binding.from</strong>('App.userController.name')
+});
+
+App.userController.set('name', 'Joe');
+console.log(App.mainView.get('user')); // Joe
+
+App.mainView.set('user', 'Jim');
+console.log(App.userController.get('name')); // Jim</pre>
+      </article>
+      
+      <!-- *************************************************** -->
+			<!--  KVO - Computed Properties                          -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Computed Prop
+        </h3>
+        <ul>
+          <li>Computed properties are functions meant to compute a value from other dependent properties.</li>
+        </ul>
+				<pre class="prettyprint">
+App.Person = Ember.Object.extend({
+  fullName: function() {
+    return this.get('firstName') + ' ' + this.get('lastName');
+  }.property('firstName', 'lastName').cacheable()
+});
+var person = App.Person.create({
+  firstName: 'Alan',
+  lastName:  'Turning'
+});
+
+person.get('fullName'); // Alan Turning
+person.set('lastName', 'Smith');
+person.get('fullName'); // Alan Smith </pre>
+      </article>
+      
+      <!-- *************************************************** -->
+			<!--  KVO - Observers                                    -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Observers
+        </h3>
+        <ul>
+          <li>Observers are functions that fire immediately after a dependent property is changed.</li>
+        </ul>
+				<pre class="prettyprint">
+App.Person = SC.Object.extend({
+  nameDidChange: function() {
+    console.log('The Name changed!');
+  }.observes('firstName','lastName')
+});
+
+var person = App.Person.create({
+  firstName: 'Alan',
+  lastName: 'Turning'
+});
+
+person.set('lastName','Smith'); // 'The Name changed!'
+person.set('firstName','Bob');  // 'The Name changed!' </pre>
+      </article>
+      
+      <article class='smaller'>
+        <h3>
+          Simple slide with header and text (small font)
+        </h3>
+        <p>
+          This is a slide with just text. This is a slide with just text.
+          This is a slide with just text. This is a slide with just text.
+          This is a slide with just text. This is a slide with just text.
+        </p>
+        <p>
+          There is more text just underneath with a <code>code sample: 5px</code>.
+        </p>
+      </article>
+      
+      <article>
+        <h3>
+          Slide with bullet points and a longer title, just because we
+          can make it longer
+        </h3>
+        <ul>
+          <li>
+            Use this template to create your presentation
+          </li>
+          <li>
+            Use the provided color palette, box and arrow graphics, and
+            chart styles
+          </li>
+          <li>
+            Instructions are provided to assist you in using this
+            presentation template effectively
+          </li>
+          <li>
+            At all times strive to maintain Google's corporate look and feel
+          </li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Slide with bullet points that builds
+        </h3>
+        <ul class="build">
+          <li>
+            This is an example of a list
+          </li>
+          <li>
+            The list items fade in
+          </li>
+          <li>
+            Last one!
+          </li>
+        </ul>
+
+        <div class="build">
+          <p>Any element with child nodes can build.</p>
+          <p>It doesn't have to be a list.</p>
+        </div>
+      </article>
+
+      <article class='smaller'>
+        <h3>
+          Slide with bullet points (small font)
+        </h3>
+        <ul>
+          <li>
+            Use this template to create your presentation
+          <li>
+            Use the provided color palette, box and arrow graphics, and
+            chart styles
+          <li>
+            Instructions are provided to assist you in using this
+            presentation template effectively
+          <li>
+            At all times strive to maintain Google's corporate look and feel
+        </ul>
+      </article>
+
+      <article>
+        <h3>
+          Slide with a table
+        </h3>
+        
+        <table>
+          <tr>
+            <th>
+              Name
+            <th>
+              Occupation
+          <tr>
+            <td>
+              Luke Mahé
+            <td>
+              V.P. of Keepin’ It Real
+          <tr>
+            <td>
+              Marcin Wichary
+            <td>
+              The Michael Bay of Doodles
+        </table>
+      </article>
+      
+      <article class='smaller'>
+        <h3>
+          Slide with a table (smaller text)
+        </h3>
+        
+        <table>
+          <tr>
+            <th>
+              Name
+            <th>
+              Occupation
+          <tr>
+            <td>
+              Luke Mahé
+            <td>
+              V.P. of Keepin’ It Real
+          <tr>
+            <td>
+              Marcin Wichary
+            <td>
+              The Michael Bay of Doodles
+        </table>
+      </article>
+      
+      <article>
+        <h3>
+          Styles
+        </h3>
+        <ul>
+          <li>
+            <span class='red'>class="red"</span>
+          <li>
+            <span class='blue'>class="blue"</span>
+          <li>
+            <span class='green'>class="green"</span>
+          <li>
+            <span class='yellow'>class="yellow"</span>
+          <li>
+            <span class='black'>class="black"</span>
+          <li>
+            <span class='white'>class="white"</span>
+          <li>
+            <b>bold</b> and <i>italic</i>
+        </ul>
+      </article>
+      
+      <article>
+        <h2>
+          Segue slide
+        </h2>
+      </article>
+
+      <article>
+        <h3>
+          Slide with an image
+        </h3>
+        <p>
+          <img style='height: 500px' src='images/example-graph.png'>
+        </p>
+        <div class='source'>
+          Source: Sergey Brin
+        </div>
+      </article>
+
+      <article>
+        <h3>
+          Slide with an image (centered)
+        </h3>
+        <p>
+          <img class='centered' style='height: 500px' src='images/example-graph.png'>
+        </p>
+        <div class='source'>
+          Source: Larry Page
+        </div>
+      </article>
+
+      <article class='fill'>
+        <h3>
+          Image filling the slide (with optional header)
+        </h3>
+        <p>
+          <img src='images/example-cat.jpg'>
+        </p>
+        <div class='source white'>
+          Source: Eric Schmidt
+        </div>
+      </article>
+
+      <article>
+        <h3>
+          This slide has some code
+        </h3>
+        <section>
+        <pre>
+&lt;script type='text/javascript'&gt;
+  // Say hello world until the user starts questioning
+  // the meaningfulness of their existence.
+  function helloWorld(world) {
+    for (var i = 42; --i &gt;= 0;) {
+      alert('Hello ' + String(world));
+    }
+  }
+&lt;/script&gt;
+&lt;style&gt;
+  p { color: pink }
+  b { color: blue }
+  u { color: 'umber' }
+&lt;/style&gt;
+</pre>
+        </section>
+      </article>
+      
+      <article class='smaller'>
+        <h3>
+          This slide has some code (small font)
+        </h3>
+        <section>
+        <pre>
+&lt;script type='text/javascript'&gt;
+  // Say hello world until the user starts questioning
+  // the meaningfulness of their existence.
+  function helloWorld(world) {
+    for (var i = 42; --i &gt;= 0;) {
+      alert('Hello ' + String(world));
+    }
+  }
+&lt;/script&gt;
+&lt;style&gt;
+  p { color: pink }
+  b { color: blue }
+  u { color: 'umber' }
+&lt;/style&gt;
+</pre>
+        </section>
+      </article>
+      
+      <article>
+        <q>
+          The best way to predict the future is to invent it.
+        </q>
+        <div class='author'>
+          Alan Kay
+        </div>
+      </article>
+      
+      <article class='smaller'>
+        <q>
+          A distributed system is one in which the failure of a computer 
+          you didn’t even know existed can render your own computer unusable.
+        </q>
+        <div class='author'>
+          Leslie Lamport
+        </div>
+      </article>
+      
+      <article class='nobackground'>
+        <h3>
+          A slide with an embed + title
+        </h3>
+        
+        <iframe src='http://www.google.com/doodle4google/history.html'></iframe>
+      </article>
+
+      <article class='nobackground'>
+        <iframe src='http://www.google.com/doodle4google/history.html'></iframe>
+      </article>
+
+      <article class='fill'>
+        <h3>
+          Full-slide embed with (optional) slide title on top
+        </h3>
+        <iframe src='http://www.google.com/doodle4google/history.html'></iframe>
+      </article>
+      
+      <article>
+        <h3>
+          Thank you!
+        </h3>
+        
+        <ul>
+          <li>
+            <a href='http://www.google.com'>google.com</a>
+        </ul>
+      </article>
+
+    </section>
+		
+  </body>
+</html>
