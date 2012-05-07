@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>Presentation</title>
+
+    <meta charset='utf-8'>
+    <script src='assets/slides.js'></script>
+    <link rel="stylesheet" type="text/css" href="assets/additions.css" />
+  </head>
+  
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+    
+    
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+      
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+        
+      <article>
+        <h1>
+          Crash course in Ember.js
+          <br>
+          Cincy JS Meetup
+					<br><br>
+        </h1>
+        <p>
+          Wesley Workman
+          <br>
+          May 9th, 2012
+        </p>
+      </article>
+
+      <!-- *************************************************** -->
+			<!--  Credit                                             -->
+			<!-- *************************************************** -->
+      <article>
+				<h3>Credit</h3>
+
+      	<ul>
+					<li><a target="_blank" href="http://emberjs.com">EmberJS.com</a>: Source for slide data and examples.</li>
+					<li><a target="_blank" href="http://code.google.com/p/html5slides/">HTML5Slides</a>: Slide template and app.</li>
+					<li><a target="_blank" href="http://jsfiddle.net">JS Fiddle</a>: Happy playground.</li>
+					<li><a target="_blank" href="http://github.com/">GitHub</a>: Hosting.</li>
+				</ul>
+      </article>
+
+			<!-- *************************************************** -->
+			<!--  Overview                                           -->
+			<!-- *************************************************** -->
+      <article>
+				<h3>Overview</h3>
+
+      	<ul>
+					<li>Core fundaments</li>
+					<li>Handlebars Templates</li>
+					<li>Views In-Depth</li>
+					<li>Controller Layer</li>
+					<ul>
+						<li>Meditating Controllers (Ember.ArrayController)</li>
+						<li>Coordinating Controllers (Ember.StateManager)</li>
+					</ul>
+					<li>Model Layer</li>
+					<ul>
+						<li>Basics (Ember.Object)</li>
+						<li>Ember Data</li>
+					</ul>
+				</ul>
+      </article>
+
+
+			<!-- *************************************************** -->
+			<!--  Basic object orientation                           -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <ul>
+          <li>Traditional object-oriented structure</li>
+          <li>Root object, Ember.Object, contains all basic features needed by Ember.</li>
+        </ul>
+				<pre class="prettyprint">
+var person = Ember.Object.create({
+  firstName: 'Alan',
+  lastName:  'Turing'
+});
+
+person.get('firstName'); // Alan
+person.get('lastName');  // Turing
+				</pre>
+      </article>
+
+
+			<!-- *************************************************** -->
+			<!--  Subclasses                                         -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <p>
+          Subclasses can be created with <strong>.extend()</strong>
+        </p>
+				<pre class="prettyprint">
+MyApp.Person = Ember.Object.extend({   
+  firstName: '',
+  lastName:  '',
+  fullName: function() {
+    return this.get('firstName') + ' ' + this.get('lastName');
+  }
+});
+
+var person = MyApp.Person.create({
+  firstName: 'Alan',
+  lastName: 'Turing'
+});
+
+person.fullName(); // Alan Turing
+				</pre>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  init && sc_super()                                 -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <ul>
+          <li>When an Ember.Object instance is created, the init method is called.</li>
+          <li><strong>this._super();</strong> method calls original function. Similar to the super method in Ruby / Java.</li>
+        </ul>
+				<pre class="prettyprint">
+MyApp.Person = Ember.Object.extend({
+  init: function() {
+    this._super(); // Calls Ember.Object.init
+    console.log(‘person created’);
+  }
+});
+
+var person = MyApp.Person.create(); // person created
+				</pre>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  Mixins                                             -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - Object Orientation
+        </h3>
+        <ul>
+          <li>Use of ‘mixins’ allows multiple classes that don’t share an inheritance tree to have common code. Loosely enforced prototypes.</li>
+        </ul>
+				<pre class="prettyprint">
+MyApp.Friendly = {
+  sayHello: function() {
+    return 'Hello, my name is ' + this.get('name');
+  }
+};
+
+var person = App.Person.create(<strong>MyApp.Friendly</strong>, {
+  name: 'Bob'
+});
+
+person.sayHello(); // Hello, my name is Bob 
+				</pre>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  KVO                                                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Getters / Setters
+        </h3>
+        <ul>
+          <li>Properties should never be accessed directly. Always use .get() and .set().</li>
+        </ul>
+				<pre class="prettyprint">
+var obj = Ember.Object.create({
+  name: 'Jim'
+});
+
+obj.get('name'); // Jim
+obj.set('name', 'Bob');
+obj.get('name'); // Bob
+				</pre>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  KVO - Bindings                                     -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Bindings
+        </h3>
+        <ul>
+          <li>Bindings keep two properties, on different objects, in sync with each other.</li>
+        </ul>
+				<pre class="prettyprint">
+MyApp.userController = Ember.Object.create({
+  name: null
+});
+
+MyApp.mainView = Ember.View.create({
+  userBinding: <strong>Ember.Binding.from</strong>('App.userController.name')
+});
+
+App.userController.set('name', 'Joe');
+console.log(App.mainView.get('user')); // Joe
+
+App.mainView.set('user', 'Jim');
+console.log(App.userController.get('name')); // Jim</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  KVO - Computed Properties                          -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Computed Prop
+        </h3>
+        <ul>
+          <li>Computed properties are functions meant to compute a value from other dependent properties.</li>
+        </ul>
+				<pre class="prettyprint">
+App.Person = Ember.Object.extend({
+  fullName: function() {
+    return this.get('firstName') + ' ' + this.get('lastName');
+  }.property('firstName', 'lastName').cacheable()
+});
+var person = App.Person.create({
+  firstName: 'Alan',
+  lastName:  'Turning'
+});
+
+person.get('fullName'); // Alan Turning
+person.set('lastName', 'Smith');
+person.get('fullName'); // Alan Smith </pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  KVO - Observers                                    -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Core fundaments - KVO Observers
+        </h3>
+        <ul>
+          <li>Observers are functions that fire immediately after a dependent property is changed.</li>
+        </ul>
+				<pre class="prettyprint">
+App.Person = SC.Object.extend({
+  nameDidChange: function() {
+    console.log('The Name changed!');
+  }.observes('firstName','lastName')
+});
+
+var person = App.Person.create({
+  firstName: 'Alan',
+  lastName: 'Turning'
+});
+
+person.set('lastName','Smith'); // 'The Name changed!'
+person.set('firstName','Bob');  // 'The Name changed!' </pre>
+      </article>
+
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars Templates                               -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center; margin-top: 150px">Handlebars Templates</h1>
+        <a href="http://handlebarsjs.com/"><img class="handlebars-logo" /></a>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Creating Template part 1              -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Creating a template (part 1)
+        </h3>
+        <ul>
+          <li>Templates are HTML with embedded expressions.</li>
+          <li>At runtime, Ember will compile these templates so they are available for you to use in your views.</li>
+          <li>The <code>data-template-name</code> attribute will be used to access the template later.</li>
+        </ul>
+				<pre class="prettyprint">
+&lt;script type="text/x-handlebars" data-template-name="user-page"&gt;
+  Hello, &lt;b&gt;{{MyApp.userController.name}}&lt;/b&gt;
+  {{#if hasMessages}}
+    You have {{unreadCount}} unread messages.
+  {{/else}}
+    There are no new messages.
+  {{/if}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Creating Template part 2              -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Creating a template (part 2)
+        </h3>
+        <ul>
+          <li>Building a view object using that template.</li>
+        </ul>
+				<pre class="prettyprint">
+var view = Ember.View.create({
+  templateName: 'user-page',
+  unreadCount: 6,
+  hasMessages: function() {
+    return this.get('unreadCount') > 0;
+  }.property('unreadCount').cacheable()
+});
+
+// Append the view to the document as a child of '#container'
+view.appendTo('#container');
+// Append the view to the document body
+view.append();
+// Remove the view from the document
+view.remove();</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Binding element attributes            -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Binding element attributes
+        </h3>
+        <ul>
+          <li>Templates can bind to HTML attributes.</li>
+        </ul>
+				<pre class="prettyprint">
+App.LogoView = Ember.View.extend({
+  logoUrl: 'http://www.mycorp.com/images/logo.png',
+  isSelected: true
+});</pre>
+
+<pre class="prettyprint">
+&lt;div id="logo" {{bindAttr class="isSelected"}}&gt;
+  &lt;img {{bindAttr src="logoUrl"}} alt="Logo"&gt;
+&lt;/div&gt;</pre>
+
+<pre class="prettyprint">
+&lt;!-- Output --&gt;
+&lt;div id="logo" class="<strong>is-selected</strong>"&gt;
+  &lt;img src="<strong>http://www.mycorp.com/images/logo.png</strong>" alt="Logo"&gt;
+&lt;/div&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - View Hierarchy                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - View Hierarchy
+        </h3>
+        <ul>
+          <li>View classes can be reused in templates - {{view}}.</li>
+          <li>Templates can also be compiled at runtime.</li>
+        </ul>
+				<pre class="prettyprint">
+App.WidgetView = Ember.View.extend({
+  template: Handlebars.compile('&lt;div&gt;{{title}}&lt;/div&gt;'),
+  title: '' 
+});</pre>
+        <pre class="prettyprint">
+&lt;script type="text/x-handlebars"&gt;
+  {{view App.WidgetView titleBinding="App.historyController.title"}}
+  {{view App.WidgetView titleBinding="App.ordersController.title"}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - View's HTML                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Modifying a View's HTML
+        </h3>
+        <ul>
+          <li>View instances can be modified as needed.</li>
+        </ul>
+        <pre class="prettyprint">
+&lt;script type="text/x-handlebars"&gt;
+  // Modifying tagName and element id
+  {{view App.WidgetView <strong>tagName="span" id="history-widget-view"</strong>}}
+
+  // Adding class names
+  {{view App.WidgetView <strong>class="history-list widget"</strong>}}
+  {{view App.WidgetView <strong>classBinding="isEnabled widgetType"</strong>}}
+  
+  // Modifying inner HTML
+  {{#view App.WidgetView}}
+    &lt;h3&gt;History Widget&lt;&#47;h3&gt;
+  {{/view}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Listing Items                         -->
+			<!-- *************************************************** -->
+      <article class='smaller'>
+        <h3>
+          Handlerbars - Listing items
+        </h3>
+        <ul>
+          <li>Basic lists can use {{#each}}</li>
+          <li>More advanced lists should use {{#collection}}</li>
+        </ul>
+				<pre class="prettyprint">
+App.PeopleView = Ember.View.extend({
+  people: [ { name: 'Yehuda' }, 
+            { name: 'Tom' } ]
+});</pre>
+
+<pre class="prettyprint">
+&lt;ul&gt;
+  {{#each people}}
+    &lt;li>Hello, {{name}}!&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;
+</pre>
+
+<pre class="prettyprint">
+&lt;ul&gt;
+  &lt;li&gt;Hello, Yehuda!&lt;/li&gt;
+  &lt;li&gt;Hello, Tom!&lt;/li&gt;
+&lt;/ul&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Included Views                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Included Views
+        </h3>
+        <ul>
+          <li>Ember includes a handful of stock views.</li>
+          <ul>
+            <li>Ember.Button</li>
+            <li>Ember.Checkbox</li>
+            <li>Ember.TextField</li>
+            <li>Ember.Select</li>
+            <li>Ember.TextArea</li>
+          </ul>
+          <li>Other projects exist to provide additional widget views.</li>
+          <ul>
+            <li><a href="https://github.com/flamejs/flame.js">Flame.js</a>: A UI widget library for Ember.js. Aims to match SproutCore's widget set.</li>
+            <li><a href="https://github.com/tchak/ember-jui">Ember-jui</a>: jQuery UI wrapper for Ember.js.</li>
+          </ul>
+        </ul>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  Views in depth                                     -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Views In-Depth</h1>
+        <p style="text-align: center; padding-right: 30px;">(Less Templates, More Code)</p>
+      </article>
+      
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Handling Events                    -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - Handling Events
+        </h3>
+        <p style="padding-top: 10px">Ember provides a standard mechanism to enable views to receive a wide set of HTML events. See <a target="_blank"  href="https://github.com/emberjs/ember.js/blob/master/packages/ember-views/lib/views/view.js#L318-413">code docs</a> for more.</p>
+        
+				<pre class="prettyprint">
+App.ClickableView = Ember.View.extend({
+  click: function(evt) {
+    alert("ClickableView was clicked!");
+  }
+});</pre>
+
+<pre class="prettyprint">
+&lt;div&gt;  
+  {{#view App.ClickableView}}
+    &lt;p>This is a clickable area!&lt;/p&gt;
+  {{/view}}
+&lt;/div&gt;  
+</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Managing with Ember.ContainerView  -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - Ember.ContainerView
+        </h3>
+        <p style="padding-top: 10px">Ember.ContainerView can help manually managing views.</p>
+        
+				<pre class="prettyprint">
+var container = Ember.ContainerView.create();
+container.append();
+
+var coolView = App.CoolView.create(),
+    childViews = container.get('childViews');
+
+childViews.pushObject(coolView);</pre>
+
+  				<pre class="prettyprint">
+var container = Ember.ContainerView.create({
+  childViews: ['firstView', 'secondView'],
+
+  firstView: App.FirstView,
+  secondView: App.SecondView
+});</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Render Pipeline                    -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - Render Pipeline
+        </h3>
+        <p class="sub-heading">Render Pipeline allows you to build HTML without using handlebars.</p>
+        
+				<pre class="prettyprint">
+App.CoolView = Ember.View.create({
+  status: '',
+  render: function(buffer) {
+    buffer.push('This view is so &lt;span class="status"&gt;&lt;/span&gt;!');
+  },
+  
+  /* With render pipeline you need to manually update the DOM. */
+  _statusDidChange: function() {
+    var statusElem = this.$('.status')[0];
+    if(statusElem) { statusElem.innerHTML = this.get('status'); }
+  }.observes('status')
+});</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Customizing HTML Element           -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - Custom HTML Element
+        </h3>
+        <p class="sub-heading">There are several was to customize the HTML Element.</p>
+        
+				<pre class="prettyprint">
+App.MyView = Ember.View.extend({
+  tagName: 'a',
+  classNames: ['link-view'],
+  classNameBindings: ['isUrgent:urgent'],
+  attributeBindings: ['href'],
+  template: Handlebars.compile('{{title}}'),
+  
+  href: "http://emberjs.com",
+  title: 'Ember.js',
+  isUrgent: true
+});</pre>
+
+<pre class="prettyprint">
+&lt;a class="link-view urgent" href="http://emberjs.com"&gt;Ember.js&lt;/a&gt;
+</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - DOM API                            -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - DOM API for integration
+        </h3>
+        <p class="sub-heading">Ember provides a basic DOM API to help integrate with other libraries.</p>
+        
+				<pre class="prettyprint">
+App.MyView = Ember.View.extend({
+  // Called when a view is going to insert an element into the DOM.
+  willInsertElement: function() {},
+
+  // Called when the view's element has been inserted into the DOM.
+  didInsertElement: function() {},
+
+  // Called when the view is about to rerender.
+  willRerender: function() {},
+  
+  // Called when the element of the view is going to be destroyed.
+  willDestroyElement: function() {}
+});</pre>
+
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Meditating Controllers</h1>
+        <p style="text-align: center; padding-right: 30px;">(Ember.ArrayProxy and Ember.Object)</p>
+        <p style="text-align: center; padding-right: 30px;">TODO: http://emberjs.com/#toc_changes-in-arrays</p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Controller - Coordinating Controllers               -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Coordinating Controllers</h1>
+        <p style="text-align: center; padding-right: 30px;">(Ember.StateManager)</p>
+      </article>
+      
+      
+
+
+    </section>
+		
+  </body>
+</html>

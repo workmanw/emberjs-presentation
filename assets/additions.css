@@ -1,0 +1,17 @@
+
+.handlebars-logo {
+  background: url('images/handlebars-logo.png') no-repeat;  
+  width: 385px;
+  height: 236px;
+  border-radius: 15px;
+  margin-top: 40px;
+  margin-left: 200px;
+}
+
+.prettyprint {
+  border-radius: 10px;
+}
+
+article .sub-heading {
+  padding-top: 10px;
+}
