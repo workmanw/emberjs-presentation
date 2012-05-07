@@ -17,8 +17,8 @@
     <title>Presentation</title>
 
     <meta charset='utf-8'>
-    <script
-      src='assets/slides.js'></script>
+    <script src='assets/slides.js'></script>
+    <link rel="stylesheet" type="text/css" href="assets/additions.css" />
   </head>
   
   <style>
@@ -59,7 +59,7 @@
       	<ul>
 					<li>Core fundaments</li>
 					<li>Handlebars Templates</li>
-					<li>Views in depth</li>
+					<li>Views In-Depth</li>
 					<li>Controller Layer</li>
 					<ul>
 						<li>Meditating Controllers (Ember.ArrayController)</li>
@@ -283,7 +283,8 @@ person.set('firstName','Bob');  // 'The Name changed!' </pre>
 			<!--  Handlebars Templates                               -->
 			<!-- *************************************************** -->
       <article>
-        <h1 style="text-align: center">Handlebars Templates</h1>
+        <h1 style="text-align: center; margin-top: 150px">Handlebars Templates</h1>
+        <a href="http://handlebarsjs.com/"><img class="handlebars-logo" /></a>
       </article>
       
       
@@ -362,10 +363,158 @@ App.LogoView = Ember.View.extend({
 
 <pre class="prettyprint">
 &lt;!-- Output --&gt;
-&lt;div id="logo" class="is-selected"&gt;
-  &lt;img src="http://www.mycorp.com/images/logo.png" alt="Logo"&gt;
+&lt;div id="logo" class="<strong>is-selected</strong>"&gt;
+  &lt;img src="<strong>http://www.mycorp.com/images/logo.png</strong>" alt="Logo"&gt;
 &lt;/div&gt;</pre>
       </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - View Hierarchy                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - View Hierarchy
+        </h3>
+        <ul>
+          <li>View classes can be reused in templates - {{view}}.</li>
+          <li>Templates can also be compiled at runtime.</li>
+        </ul>
+				<pre class="prettyprint">
+App.WidgetView = Ember.View.extend({
+  template: Handlebars.compile('&lt;div&gt;{{title}}&lt;/div&gt;'),
+  title: '' 
+});</pre>
+        <pre class="prettyprint">
+&lt;script type="text/x-handlebars"&gt;
+  {{view App.WidgetView titleBinding="App.historyController.title"}}
+  {{view App.WidgetView titleBinding="App.ordersController.title"}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - View's HTML                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Modifying a View's HTML
+        </h3>
+        <ul>
+          <li>View instances can be modified as needed.</li>
+        </ul>
+        <pre class="prettyprint">
+&lt;script type="text/x-handlebars"&gt;
+  // Modifying tagName and element id
+  {{view App.WidgetView <strong>tagName="span" id="history-widget-view"</strong>}}
+
+  // Adding class names
+  {{view App.WidgetView <strong>class="history-list widget"</strong>}}
+  {{view App.WidgetView <strong>classBinding="isEnabled widgetType"</strong>}}
+  
+  // Modifying inner HTML
+  {{#view App.WidgetView}}
+    &lt;h3&gt;History Widget&lt;&#47;h3&gt;
+  {{/view}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Listing Items                         -->
+			<!-- *************************************************** -->
+      <article class='smaller'>
+        <h3>
+          Handlerbars - Listing items
+        </h3>
+        <ul>
+          <li>Basic lists can use {{#each}}</li>
+          <li>More advanced lists should use {{#collection}}</li>
+        </ul>
+				<pre class="prettyprint">
+App.PeopleView = Ember.View.extend({
+  people: [ { name: 'Yehuda' }, 
+            { name: 'Tom' } ]
+});</pre>
+
+<pre class="prettyprint">
+&lt;ul&gt;
+  {{#each people}}
+    &lt;li>Hello, {{name}}!&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;
+</pre>
+
+<pre class="prettyprint">
+&lt;ul&gt;
+  &lt;li&gt;Hello, Yehuda!&lt;/li&gt;
+  &lt;li&gt;Hello, Tom!&lt;/li&gt;
+&lt;/ul&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Included Views                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Included Views
+        </h3>
+        <ul>
+          <li>Ember includes a handful of stock views.</li>
+          <ul>
+            <li>Ember.Button</li>
+            <li>Ember.Checkbox</li>
+            <li>Ember.TextField</li>
+            <li>Ember.Select</li>
+            <li>Ember.TextArea</li>
+          </ul>
+          <li>Other projects exist to provide additional widget views.</li>
+          <ul>
+            <li><a href="https://github.com/flamejs/flame.js">Flame.js</a>: A UI widget library for Ember.js. Aims to match SproutCore's widget set.</li>
+            <li><a href="https://github.com/tchak/ember-jui">Ember-jui</a>: jQuery UI wrapper for Ember.js.</li>
+          </ul>
+        </ul>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  Views in depth                                     -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Views In-Depth</h1>
+        <p style="text-align: center; padding-right: 30px;">(Less Templates, More Code)</p>
+      </article>
+      
+      
+      
+      <!-- *************************************************** -->
+			<!--  Handlebars - Included Views                        -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Handlerbars - Included Views
+        </h3>
+        <ul>
+          <li>Ember includes a handful of stock views.</li>
+          <ul>
+            <li>Ember.Button</li>
+            <li>Ember.Checkbox</li>
+            <li>Ember.TextField</li>
+            <li>Ember.Select</li>
+            <li>Ember.TextArea</li>
+          </ul>
+          <li>Other projects exist to provide additional widget views.</li>
+          <ul>
+            <li><a href="https://github.com/flamejs/flame.js">Flame.js</a>: A UI widget library for Ember.js. Aims to match SproutCore's widget set.</li>
+            <li><a href="https://github.com/tchak/ember-jui">Ember-jui</a>: jQuery UI wrapper for Ember.js.</li>
+          </ul>
+        </ul>
+      </article>
+      
+      
+      
+      
       
       
       
