@@ -49,6 +49,19 @@
         </p>
       </article>
 
+      <!-- *************************************************** -->
+			<!--  Credit                                             -->
+			<!-- *************************************************** -->
+      <article>
+				<h3>Credit</h3>
+
+      	<ul>
+					<li><a target="_blank" href="http://emberjs.com">EmberJS.com</a>: Source for slide data and examples.</li>
+					<li><a target="_blank" href="http://code.google.com/p/html5slides/">HTML5Slides</a>: Slide template and app.</li>
+					<li><a target="_blank" href="http://jsfiddle.net">JS Fiddle</a>: Happy playground.</li>
+					<li><a target="_blank" href="http://github.com/">GitHub</a>: Hosting.</li>
+				</ul>
+      </article>
 
 			<!-- *************************************************** -->
 			<!--  Overview                                           -->
@@ -489,322 +502,159 @@ App.PeopleView = Ember.View.extend({
       
       
       <!-- *************************************************** -->
-			<!--  Handlebars - Included Views                        -->
+			<!-- Views In-Depth - Handling Events                    -->
 			<!-- *************************************************** -->
       <article>
         <h3>
-          Handlerbars - Included Views
+          Views In-Depth - Handling Events
         </h3>
-        <ul>
-          <li>Ember includes a handful of stock views.</li>
-          <ul>
-            <li>Ember.Button</li>
-            <li>Ember.Checkbox</li>
-            <li>Ember.TextField</li>
-            <li>Ember.Select</li>
-            <li>Ember.TextArea</li>
-          </ul>
-          <li>Other projects exist to provide additional widget views.</li>
-          <ul>
-            <li><a href="https://github.com/flamejs/flame.js">Flame.js</a>: A UI widget library for Ember.js. Aims to match SproutCore's widget set.</li>
-            <li><a href="https://github.com/tchak/ember-jui">Ember-jui</a>: jQuery UI wrapper for Ember.js.</li>
-          </ul>
-        </ul>
-      </article>
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      <article class='smaller'>
-        <h3>
-          Simple slide with header and text (small font)
-        </h3>
-        <p>
-          This is a slide with just text. This is a slide with just text.
-          This is a slide with just text. This is a slide with just text.
-          This is a slide with just text. This is a slide with just text.
-        </p>
-        <p>
-          There is more text just underneath with a <code>code sample: 5px</code>.
-        </p>
-      </article>
-      
-      <article>
-        <h3>
-          Slide with bullet points and a longer title, just because we
-          can make it longer
-        </h3>
-        <ul>
-          <li>
-            Use this template to create your presentation
-          </li>
-          <li>
-            Use the provided color palette, box and arrow graphics, and
-            chart styles
-          </li>
-          <li>
-            Instructions are provided to assist you in using this
-            presentation template effectively
-          </li>
-          <li>
-            At all times strive to maintain Google's corporate look and feel
-          </li>
-        </ul>
-      </article>
-
-      <article>
-        <h3>
-          Slide with bullet points that builds
-        </h3>
-        <ul class="build">
-          <li>
-            This is an example of a list
-          </li>
-          <li>
-            The list items fade in
-          </li>
-          <li>
-            Last one!
-          </li>
-        </ul>
-
-        <div class="build">
-          <p>Any element with child nodes can build.</p>
-          <p>It doesn't have to be a list.</p>
-        </div>
-      </article>
-
-      <article class='smaller'>
-        <h3>
-          Slide with bullet points (small font)
-        </h3>
-        <ul>
-          <li>
-            Use this template to create your presentation
-          <li>
-            Use the provided color palette, box and arrow graphics, and
-            chart styles
-          <li>
-            Instructions are provided to assist you in using this
-            presentation template effectively
-          <li>
-            At all times strive to maintain Google's corporate look and feel
-        </ul>
-      </article>
-
-      <article>
-        <h3>
-          Slide with a table
-        </h3>
+        <p style="padding-top: 10px">Ember provides a standard mechanism to enable views to receive a wide set of HTML events. See <a target="_blank"  href="https://github.com/emberjs/ember.js/blob/master/packages/ember-views/lib/views/view.js#L318-413">code docs</a> for more.</p>
         
-        <table>
-          <tr>
-            <th>
-              Name
-            <th>
-              Occupation
-          <tr>
-            <td>
-              Luke Mahé
-            <td>
-              V.P. of Keepin’ It Real
-          <tr>
-            <td>
-              Marcin Wichary
-            <td>
-              The Michael Bay of Doodles
-        </table>
-      </article>
-      
-      <article class='smaller'>
-        <h3>
-          Slide with a table (smaller text)
-        </h3>
-        
-        <table>
-          <tr>
-            <th>
-              Name
-            <th>
-              Occupation
-          <tr>
-            <td>
-              Luke Mahé
-            <td>
-              V.P. of Keepin’ It Real
-          <tr>
-            <td>
-              Marcin Wichary
-            <td>
-              The Michael Bay of Doodles
-        </table>
-      </article>
-      
-      <article>
-        <h3>
-          Styles
-        </h3>
-        <ul>
-          <li>
-            <span class='red'>class="red"</span>
-          <li>
-            <span class='blue'>class="blue"</span>
-          <li>
-            <span class='green'>class="green"</span>
-          <li>
-            <span class='yellow'>class="yellow"</span>
-          <li>
-            <span class='black'>class="black"</span>
-          <li>
-            <span class='white'>class="white"</span>
-          <li>
-            <b>bold</b> and <i>italic</i>
-        </ul>
-      </article>
-      
-      <article>
-        <h2>
-          Segue slide
-        </h2>
-      </article>
-
-      <article>
-        <h3>
-          Slide with an image
-        </h3>
-        <p>
-          <img style='height: 500px' src='images/example-graph.png'>
-        </p>
-        <div class='source'>
-          Source: Sergey Brin
-        </div>
-      </article>
-
-      <article>
-        <h3>
-          Slide with an image (centered)
-        </h3>
-        <p>
-          <img class='centered' style='height: 500px' src='images/example-graph.png'>
-        </p>
-        <div class='source'>
-          Source: Larry Page
-        </div>
-      </article>
-
-      <article class='fill'>
-        <h3>
-          Image filling the slide (with optional header)
-        </h3>
-        <p>
-          <img src='images/example-cat.jpg'>
-        </p>
-        <div class='source white'>
-          Source: Eric Schmidt
-        </div>
-      </article>
-
-      <article>
-        <h3>
-          This slide has some code
-        </h3>
-        <section>
-        <pre>
-&lt;script type='text/javascript'&gt;
-  // Say hello world until the user starts questioning
-  // the meaningfulness of their existence.
-  function helloWorld(world) {
-    for (var i = 42; --i &gt;= 0;) {
-      alert('Hello ' + String(world));
-    }
+				<pre class="prettyprint">
+App.ClickableView = Ember.View.extend({
+  click: function(evt) {
+    alert("ClickableView was clicked!");
   }
-&lt;/script&gt;
-&lt;style&gt;
-  p { color: pink }
-  b { color: blue }
-  u { color: 'umber' }
-&lt;/style&gt;
-</pre>
-        </section>
-      </article>
-      
-      <article class='smaller'>
-        <h3>
-          This slide has some code (small font)
-        </h3>
-        <section>
-        <pre>
-&lt;script type='text/javascript'&gt;
-  // Say hello world until the user starts questioning
-  // the meaningfulness of their existence.
-  function helloWorld(world) {
-    for (var i = 42; --i &gt;= 0;) {
-      alert('Hello ' + String(world));
-    }
-  }
-&lt;/script&gt;
-&lt;style&gt;
-  p { color: pink }
-  b { color: blue }
-  u { color: 'umber' }
-&lt;/style&gt;
-</pre>
-        </section>
-      </article>
-      
-      <article>
-        <q>
-          The best way to predict the future is to invent it.
-        </q>
-        <div class='author'>
-          Alan Kay
-        </div>
-      </article>
-      
-      <article class='smaller'>
-        <q>
-          A distributed system is one in which the failure of a computer 
-          you didn’t even know existed can render your own computer unusable.
-        </q>
-        <div class='author'>
-          Leslie Lamport
-        </div>
-      </article>
-      
-      <article class='nobackground'>
-        <h3>
-          A slide with an embed + title
-        </h3>
-        
-        <iframe src='http://www.google.com/doodle4google/history.html'></iframe>
-      </article>
+});</pre>
 
-      <article class='nobackground'>
-        <iframe src='http://www.google.com/doodle4google/history.html'></iframe>
-      </article>
-
-      <article class='fill'>
-        <h3>
-          Full-slide embed with (optional) slide title on top
-        </h3>
-        <iframe src='http://www.google.com/doodle4google/history.html'></iframe>
+<pre class="prettyprint">
+&lt;div&gt;  
+  {{#view App.ClickableView}}
+    &lt;p>This is a clickable area!&lt;/p&gt;
+  {{/view}}
+&lt;/div&gt;  
+</pre>
       </article>
       
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Managing with Ember.ContainerView  -->
+			<!-- *************************************************** -->
       <article>
         <h3>
-          Thank you!
+          Views In-Depth - Ember.ContainerView
         </h3>
+        <p style="padding-top: 10px">Ember.ContainerView can help manually managing views.</p>
         
-        <ul>
-          <li>
-            <a href='http://www.google.com'>google.com</a>
-        </ul>
+				<pre class="prettyprint">
+var container = Ember.ContainerView.create();
+container.append();
+
+var coolView = App.CoolView.create(),
+    childViews = container.get('childViews');
+
+childViews.pushObject(coolView);</pre>
+
+  				<pre class="prettyprint">
+var container = Ember.ContainerView.create({
+  childViews: ['firstView', 'secondView'],
+
+  firstView: App.FirstView,
+  secondView: App.SecondView
+});</pre>
       </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Render Pipeline                    -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - Render Pipeline
+        </h3>
+        <p class="sub-heading">Render Pipeline allows you to build HTML without using handlebars.</p>
+        
+				<pre class="prettyprint">
+App.CoolView = Ember.View.create({
+  status: '',
+  render: function(buffer) {
+    buffer.push('This view is so &lt;span class="status"&gt;&lt;/span&gt;!');
+  },
+  
+  /* With render pipeline you need to manually update the DOM. */
+  _statusDidChange: function() {
+    var statusElem = this.$('.status')[0];
+    if(statusElem) { statusElem.innerHTML = this.get('status'); }
+  }.observes('status')
+});</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - Customizing HTML Element           -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - Custom HTML Element
+        </h3>
+        <p class="sub-heading">There are several was to customize the HTML Element.</p>
+        
+				<pre class="prettyprint">
+App.MyView = Ember.View.extend({
+  tagName: 'a',
+  classNames: ['link-view'],
+  classNameBindings: ['isUrgent:urgent'],
+  attributeBindings: ['href'],
+  template: Handlebars.compile('{{title}}'),
+  
+  href: "http://emberjs.com",
+  title: 'Ember.js',
+  isUrgent: true
+});</pre>
+
+<pre class="prettyprint">
+&lt;a class="link-view urgent" href="http://emberjs.com"&gt;Ember.js&lt;/a&gt;
+</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Views In-Depth - DOM API                            -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>
+          Views In-Depth - DOM API for integration
+        </h3>
+        <p class="sub-heading">Ember provides a basic DOM API to help integrate with other libraries.</p>
+        
+				<pre class="prettyprint">
+App.MyView = Ember.View.extend({
+  // Called when a view is going to insert an element into the DOM.
+  willInsertElement: function() {},
+
+  // Called when the view's element has been inserted into the DOM.
+  didInsertElement: function() {},
+
+  // Called when the view is about to rerender.
+  willRerender: function() {},
+  
+  // Called when the element of the view is going to be destroyed.
+  willDestroyElement: function() {}
+});</pre>
+
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Meditating Controllers</h1>
+        <p style="text-align: center; padding-right: 30px;">(Ember.ArrayProxy and Ember.Object)</p>
+        <p style="text-align: center; padding-right: 30px;">TODO: http://emberjs.com/#toc_changes-in-arrays</p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Controller - Coordinating Controllers               -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Coordinating Controllers</h1>
+        <p style="text-align: center; padding-right: 30px;">(Ember.StateManager)</p>
+      </article>
+      
+      
+
 
     </section>
 		
