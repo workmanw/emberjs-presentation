@@ -34,3 +34,8 @@ article .sub-heading {
   height: 32px;
   border: none 0;
 }
+
+.jsfiddle {
+  position: absolute;
+  bottom: 35px
+}
