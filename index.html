@@ -43,7 +43,7 @@
 					<br><br>
         </h1>
         <p>
-          Wesley Workman
+          Wesley Workman (<a href="http://twitter.com/#!/workmanw">@workmanw<img class="twitter-icon" src="assets/images/twitter-icon.png"></a>)
           <br>
           May 9th, 2012
         </p>
@@ -136,6 +136,8 @@ var person = MyApp.Person.create({
 
 person.fullName(); // Alan Turing
 				</pre>
+				
+				<div class="jsfiddle"><a href="http://jsfiddle.net/workmanw/vANsy/">jsFiddle</a></div>
       </article>
 
 
@@ -291,6 +293,15 @@ person.set('lastName','Smith'); // 'The Name changed!'
 person.set('firstName','Bob');  // 'The Name changed!' </pre>
       </article>
 
+      
+      <!-- *************************************************** -->
+			<!--  MVC V-Property                                     -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center; margin-top: 20px">MVC V-Property</h1>
+        <a href="http://handlebarsjs.com/"><img class="mvc-v-property" /></a>
+      </article>
+      
       
       <!-- *************************************************** -->
 			<!--  Handlebars Templates                               -->
@@ -612,9 +623,7 @@ App.MyView = Ember.View.extend({
 			<!-- Views In-Depth - DOM API                            -->
 			<!-- *************************************************** -->
       <article>
-        <h3>
-          Views In-Depth - DOM API for integration
-        </h3>
+        <h3>Views In-Depth - DOM API for integration</h3>
         <p class="sub-heading">Ember provides a basic DOM API to help integrate with other libraries.</p>
         
 				<pre class="prettyprint">
@@ -640,8 +649,61 @@ App.MyView = Ember.View.extend({
 			<!-- *************************************************** -->
       <article>
         <h1 style="text-align: center">Meditating Controllers</h1>
-        <p style="text-align: center; padding-right: 30px;">(Ember.ArrayProxy and Ember.Object)</p>
-        <p style="text-align: center; padding-right: 30px;">TODO: http://emberjs.com/#toc_changes-in-arrays</p>
+        <p style="text-align: center; padding-right: 30px;">(Ember.ArrayController and Ember.Object)</p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Meditating Controller - Ember.ArrayProxy</h3>
+        <ul>
+          <li>Wraps an object that implements Ember.Array.</li>
+          <li>Handy when swapping out the underlying array is need.</li>
+        </ul>
+        
+        <pre class="prettyprint">
+var users = [
+  { userName: 'workmanw', lastName: 'Workman', firstName: 'Wesley' },
+  { userName: 'workmand', lastName: 'Workman', firstName: 'Dania' }
+];
+App.userListController = Ember.ArrayController.create();
+App.userListController.set('content', users);</pre>
+
+<pre class="prettyprint">
+&lt;script type="text/x-handlebars"&gt;
+  {{#each App.userListController}}
+    ({{userName}}) - {{lastName}}, {{firstName}}&lt;br/&gt;
+  {{/each}}
+&lt;/script&gt;</pre>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Meditating Controller - Ember.Object</h3>
+        <ul>
+          <li>Controllers can be built directly from Ember.Objects because of the flexibility provided by Ember's bindings.</li>
+        </ul>
+        
+        <pre class="prettyprint">
+App.todosController = Ember.Object.create({
+  todos: [
+    Ember.Object.create({ isDone: false })
+  ],
+  remaining: function() {
+    var todos = this.get('todos');
+    return todos.filterProperty('isDone', false).get('length');
+  }.property('todos.@each.isDone')
+});</pre>
+
+<pre class="prettyprint">
+&lt;script type="text/x-handlebars"&gt;
+  Remaining Todos: {{App.todosController.remaining}}
+&lt;/script&gt;</pre>
       </article>
       
       
@@ -654,9 +716,165 @@ App.MyView = Ember.View.extend({
       </article>
       
       
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Ember.StateManager</h3>
+        <ul>
+          <li>Ember implements a finite state machine.</li>
+          <li>Manages the application state.</li>
+          <li>Adds synchronicity back to your app.</li>
+          <li>Ember.View includes an Ember.StateManager to help with DOM interactions.</li>
+          <li>State managers can receive events. Events are handled but the current state or the first ancestor state to implement a matching handler.</li>
+        </ul>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Ember.StateManager - Basic example</h3>
+        <p class="sub-heading">Basic example of a state manager.</p>
 
+        <pre class="prettyprint">
+App.appStates = Ember.StateManager.create({
+  initialState: 'aState',
+  
+  aState: Ember.State.create({
+    anAction: function(manager, context) {
+      if(context.value > 9) {
+        manager.goToState('bState');
+      }
+    }
+  }),
+  
+  bState: Ember.State.create({})
+});
+
+App.appStates.send('anAction', { value: 10 });​</pre>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!--  Controller - Meditating Controllers                -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Ember.StateManager - Login Manager</h3>
+
+        <pre class="prettyprint" style="font-size: 15px; line-height: 20px; letter-spacing: 0; margin-top: 18px">
+App.stateManager = Ember.StateManager.create({
+  initialState: 'loggedOut',
+  loggedOut: Ember.ViewState.create({
+    initialState: 'awaitingCredentials',
+    <strong>view: 'App.LoginView',</strong>
+
+    <strong>awaitingCredentials:</strong> Ember.State.create({
+      authenticate: function(manager, context) {
+        manager.goToState('attemptingLogin');
+      }
+    }),
+
+    <strong>attemptingLogin:</strong> Ember.State.create({
+      enter: function() { /* Attempt server login */ },
+      loginSuccess: function(manager, context) {
+        manager.goToState('loggedIn');
+      },
+      loginFail: function(manager, context) {
+        /* Display error message */
+        manager.goToState('awaitingCredentials');
+      }
+    })
+  })
+});
+App.stateManager.send('authenticate');​</pre>
+      </article>
+
+
+      <!-- *************************************************** -->
+			<!-- Model Layer                                         -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Model Layer</h1>
+        <p style="text-align: center; padding-right: 30px;">(Brief Summary)</p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Model Layer - Ember.Dat                            -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Model Layer</h3>
+        
+        <ul>
+          <li>For basic models you can use Ember.Object classes.</li>
+          <pre class="prettyprint">
+App.Person = Ember.Object.extend({
+  firstName: '',
+  lastName: '',
+  
+  fullName: function() {
+    return this.get('lastName') + ', ' + this.get('firstName');
+  }.property('firstName', 'lastName').cacheable()
+});
+
+var alan = App.Person.create({ firstName: 'alan', lastName: 'turing' });</pre>
+          <li>For advanced model layers you should use <a target="_blank" href="https://github.com/emberjs/data">ember-data</a></li>
+        </ul>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!-- Miscellaneous                                       -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Miscellaneous Stuff</h1>
+        <p style="text-align: center; padding-right: 30px;">(Not much here either)</p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Routing                                            -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Routing</h3>
+        
+        <p>There are a few options for managing your applications routing system with Ember.</p>
+        <ul>
+          <li><a target="_blank" href="https://github.com/emberjs-addons/sproutcore-routing">sproutcore-routing</a>: Port of SproutCore route manager.</li>
+          <li><a target="_blank" href="https://github.com/emberjs-addons/sproutcore-statechart">sproutcore-statechart</a>: Port of SproutCore statechart (includes built in routing).</li>
+          <li><a target="_blank" href="https://github.com/ghempton/ember-routemanager">ember-routemanager</a>: Modern route manager build with Ember.StateManager.</li>
+        </ul>
+        <p style="margin-top:40px">It depends on how your application is structured, but I prefer ember-routemanager.</p>
+        <p>Route Example: mysite.com/myapp/<strong>#users/10/detail</strong></p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  More Ember references                              -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>More Ember references</h3>
+        
+        <p>Below are some more good references for Ember.js.</p>
+        <ul>
+          <li><a target="_blank" href="http://codebrief.com">codebrief.com</a>: Gordon Hempton's blog.</li>
+          <li><a target="_blank" href="http://stackoverflow.com/questions/tagged/emberjs">stackoverflow.com</a>: Official location for Ember.js Q&A.</li>
+          <li><a target="_blank" href="http://emberjs.tumblr.com">emberjs.tumblr.com</a>: Ember blog links.</li>
+          <li><a target="_blank" href="https://github.com/emberjs-addons">github.com/emberjs-addons</a>: Random ember projects.</li>
+        </ul>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Questions?                                         -->
+			<!-- *************************************************** -->
+      <article>
+        <h1 style="text-align: center">Questions?</h1>
+        <p style="text-align: center; padding-right: 32px;">(Thanks for attending!)</p>
+      </article>
 
     </section>
-		
   </body>
 </html>
