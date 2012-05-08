@@ -15,3 +15,22 @@
 article .sub-heading {
   padding-top: 10px;
 }
+
+.mvc-v-property {
+  background: url('images/mvc-v-property.png') no-repeat;  
+  width: 556px;
+  height: 444px;
+  border-radius: 15px;
+  border: solid 2px gray;
+  margin-top: 30px;
+  margin-left: 100px;
+}
+
+.twitter-icon {
+  margin-bottom: -7px;
+  margin-left: 2px;
+  margin-right: -2px;
+  width: 32px;
+  height: 32px;
+  border: none 0;
+}
