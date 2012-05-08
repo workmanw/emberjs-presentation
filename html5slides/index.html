@@ -389,7 +389,7 @@ view.remove();</pre>
           <li>Templates can bind to HTML attributes.</li>
         </ul>
 				<pre class="prettyprint">
-App.LogoView = Ember.View.extend({
+MyApp.LogoView = Ember.View.extend({
   logoUrl: 'http://www.mycorp.com/images/logo.png',
   isSelected: true
 });</pre>
@@ -404,6 +404,8 @@ App.LogoView = Ember.View.extend({
 &lt;div id="logo" class="<strong>is-selected</strong>"&gt;
   &lt;img src="<strong>http://www.mycorp.com/images/logo.png</strong>" alt="Logo"&gt;
 &lt;/div&gt;</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/kg9Cu/">jsFiddle</a>, <a target="_blank" href="http://jsfiddle.net/workmanw/8fjbP/">jsFiddle2</a></div>
       </article>
       
       
@@ -419,20 +421,22 @@ App.LogoView = Ember.View.extend({
           <li>Templates can also be compiled at runtime.</li>
         </ul>
 				<pre class="prettyprint">
-App.WidgetView = Ember.View.extend({
-  template: Handlebars.compile('&lt;div&gt;{{title}}&lt;/div&gt;'),
+MyApp.WidgetView = Ember.View.extend({
+  template: Handlebars.compile('&lt;div&gt;Widget Title: {{title}}&lt;/div&gt;'),
   title: '' 
 });</pre>
         <pre class="prettyprint">
 &lt;script type="text/x-handlebars"&gt;
-  {{view App.WidgetView titleBinding="App.historyController.title"}}
-  {{view App.WidgetView titleBinding="App.ordersController.title"}}
+  {{view MyApp.WidgetView titleBinding="MyApp.historyController.title"}}
+  {{view MyApp.WidgetView titleBinding="MyApp.ordersController.title"}}
 &lt;/script&gt;</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/FLT2g/">jsFiddle</a></div>
       </article>
       
       
       <!-- *************************************************** -->
-			<!--  Handlebars - View's HTML                        -->
+			<!--  Handlebars - View's HTML                           -->
 			<!-- *************************************************** -->
       <article>
         <h3>
@@ -444,14 +448,14 @@ App.WidgetView = Ember.View.extend({
         <pre class="prettyprint">
 &lt;script type="text/x-handlebars"&gt;
   // Modifying tagName and element id
-  {{view App.WidgetView <strong>tagName="span" id="history-widget-view"</strong>}}
+  {{view MyApp.WidgetView <strong>tagName="span" id="history-widget-view"</strong>}}
 
   // Adding class names
-  {{view App.WidgetView <strong>class="history-list widget"</strong>}}
-  {{view App.WidgetView <strong>classBinding="isEnabled widgetType"</strong>}}
+  {{view MyApp.WidgetView <strong>class="history-list widget"</strong>}}
+  {{view MyApp.WidgetView <strong>classBinding="isEnabled widgetType"</strong>}}
   
   // Modifying inner HTML
-  {{#view App.WidgetView}}
+  {{#view MyApp.WidgetView}}
     &lt;h3&gt;History Widget&lt;&#47;h3&gt;
   {{/view}}
 &lt;/script&gt;</pre>
@@ -470,7 +474,7 @@ App.WidgetView = Ember.View.extend({
           <li>More advanced lists should use {{#collection}}</li>
         </ul>
 				<pre class="prettyprint">
-App.PeopleView = Ember.View.extend({
+MyApp.PeopleView = Ember.View.extend({
   people: [ { name: 'Yehuda' }, 
             { name: 'Tom' } ]
 });</pre>
@@ -488,6 +492,8 @@ App.PeopleView = Ember.View.extend({
   &lt;li&gt;Hello, Yehuda!&lt;/li&gt;
   &lt;li&gt;Hello, Tom!&lt;/li&gt;
 &lt;/ul&gt;</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/XMYUw/">jsFiddle</a>, <a target="_blank" href="http://jsfiddle.net/workmanw/kcg7F/">jsFiddle2</a></div>
       </article>
       
       
@@ -536,7 +542,7 @@ App.PeopleView = Ember.View.extend({
         <p style="padding-top: 10px">Ember provides a standard mechanism to enable views to receive a wide set of HTML events. See <a target="_blank"  href="https://github.com/emberjs/ember.js/blob/master/packages/ember-views/lib/views/view.js#L318-413">code docs</a> for more.</p>
         
 				<pre class="prettyprint">
-App.ClickableView = Ember.View.extend({
+MyApp.ClickableView = Ember.View.extend({
   click: function(evt) {
     alert("ClickableView was clicked!");
   }
@@ -544,11 +550,13 @@ App.ClickableView = Ember.View.extend({
 
 <pre class="prettyprint">
 &lt;div&gt;  
-  {{#view App.ClickableView}}
+  {{#view MyApp.ClickableView}}
     &lt;p>This is a clickable area!&lt;/p&gt;
   {{/view}}
 &lt;/div&gt;  
 </pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/tVDw2/">jsFiddle</a></div>
       </article>
       
       
@@ -577,6 +585,8 @@ var container = Ember.ContainerView.create({
   firstView: App.FirstView,
   secondView: App.SecondView
 });</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/u5QQw/">jsFiddle</a></div>
       </article>
       
       
@@ -590,7 +600,7 @@ var container = Ember.ContainerView.create({
         <p class="sub-heading">Render Pipeline allows you to build HTML without using handlebars.</p>
         
 				<pre class="prettyprint">
-App.CoolView = Ember.View.create({
+MyApp.RenderPipelineView = Ember.View.create({
   status: '',
   render: function(buffer) {
     buffer.push('This view is so &lt;span class="status"&gt;&lt;/span&gt;!');
@@ -602,6 +612,8 @@ App.CoolView = Ember.View.create({
     if(statusElem) { statusElem.innerHTML = this.get('status'); }
   }.observes('status')
 });</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/SdRFw/">jsFiddle</a></div>
       </article>
       
       
@@ -615,7 +627,7 @@ App.CoolView = Ember.View.create({
         <p class="sub-heading">There are several was to customize the HTML Element.</p>
         
 				<pre class="prettyprint">
-App.MyView = Ember.View.extend({
+MyApp.MyView = Ember.View.extend({
   tagName: 'a',
   classNames: ['link-view'],
   classNameBindings: ['isUrgent:urgent'],
@@ -641,7 +653,7 @@ App.MyView = Ember.View.extend({
         <p class="sub-heading">Ember provides a basic DOM API to help integrate with other libraries.</p>
         
 				<pre class="prettyprint">
-App.MyView = Ember.View.extend({
+MyApp.MyView = Ember.View.extend({
   // Called when a view is going to insert an element into the DOM.
   willInsertElement: function() {},
 
@@ -655,6 +667,7 @@ App.MyView = Ember.View.extend({
   willDestroyElement: function() {}
 });</pre>
 
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/rmj37/">jsFiddle</a></div>
       </article>
       
       
