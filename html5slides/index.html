@@ -137,7 +137,7 @@ var person = MyApp.Person.create({
 person.fullName(); // Alan Turing
 				</pre>
 				
-				<div class="jsfiddle"><a href="http://jsfiddle.net/workmanw/vANsy/">jsFiddle</a></div>
+				<div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/GTK7V/">jsFiddle</a></div>
       </article>
 
 
@@ -162,6 +162,8 @@ MyApp.Person = Ember.Object.extend({
 
 var person = MyApp.Person.create(); // person created
 				</pre>
+				
+				<div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/HFcsJ/">jsFiddle</a></div>
       </article>
 
 
@@ -178,16 +180,18 @@ var person = MyApp.Person.create(); // person created
 				<pre class="prettyprint">
 MyApp.Friendly = {
   sayHello: function() {
-    return 'Hello, my name is ' + this.get('name');
+    return 'Hello, my name is %@.'.fmt(this.get('name'));
   }
 };
 
-var person = App.Person.create(<strong>MyApp.Friendly</strong>, {
+var person = Ember.Object.create(<strong>MyApp.Friendly</strong>, {
   name: 'Bob'
 });
 
 person.sayHello(); // Hello, my name is Bob 
 				</pre>
+				
+				<div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/7PuxB/">jsFiddle</a></div>
       </article>
 
 
@@ -210,6 +214,8 @@ obj.get('name'); // Jim
 obj.set('name', 'Bob');
 obj.get('name'); // Bob
 				</pre>
+				
+				<div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/3EWKC/">jsFiddle</a></div>
       </article>
 
 
@@ -229,14 +235,16 @@ MyApp.userController = Ember.Object.create({
 });
 
 MyApp.mainView = Ember.View.create({
-  userBinding: <strong>Ember.Binding.from</strong>('App.userController.name')
+  userBinding: <strong>Ember.Binding.from</strong>('MyApp.userController.name')
 });
 
-App.userController.set('name', 'Joe');
-console.log(App.mainView.get('user')); // Joe
+MyApp.userController.set('name', 'Joe');
+console.log(MyApp.mainView.get('user')); // Joe
 
-App.mainView.set('user', 'Jim');
-console.log(App.userController.get('name')); // Jim</pre>
+MyApp.mainView.set('user', 'Jim');
+console.log(MyApp.userController.get('name')); // Jim</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/37KsD/">jsFiddle</a></div>
       </article>
       
       
@@ -251,12 +259,12 @@ console.log(App.userController.get('name')); // Jim</pre>
           <li>Computed properties are functions meant to compute a value from other dependent properties.</li>
         </ul>
 				<pre class="prettyprint">
-App.Person = Ember.Object.extend({
+MyApp.Person = Ember.Object.extend({
   fullName: function() {
     return this.get('firstName') + ' ' + this.get('lastName');
   }.property('firstName', 'lastName').cacheable()
 });
-var person = App.Person.create({
+var person = MyApp.Person.create({
   firstName: 'Alan',
   lastName:  'Turning'
 });
@@ -264,6 +272,8 @@ var person = App.Person.create({
 person.get('fullName'); // Alan Turning
 person.set('lastName', 'Smith');
 person.get('fullName'); // Alan Smith </pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/WRHR9/">jsFiddle</a></div>
       </article>
       
       
@@ -278,19 +288,21 @@ person.get('fullName'); // Alan Smith </pre>
           <li>Observers are functions that fire immediately after a dependent property is changed.</li>
         </ul>
 				<pre class="prettyprint">
-App.Person = SC.Object.extend({
+MyApp.Person = Ember.Object.extend({
   nameDidChange: function() {
     console.log('The Name changed!');
   }.observes('firstName','lastName')
 });
 
-var person = App.Person.create({
+var person = MyApp.Person.create({
   firstName: 'Alan',
   lastName: 'Turning'
 });
 
 person.set('lastName','Smith'); // 'The Name changed!'
 person.set('firstName','Bob');  // 'The Name changed!' </pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/ewx2R/">jsFiddle</a></div>
       </article>
 
       
@@ -329,7 +341,7 @@ person.set('firstName','Bob');  // 'The Name changed!' </pre>
   Hello, &lt;b&gt;{{MyApp.userController.name}}&lt;/b&gt;
   {{#if hasMessages}}
     You have {{unreadCount}} unread messages.
-  {{/else}}
+  {{else}}
     There are no new messages.
   {{/if}}
 &lt;/script&gt;</pre>
@@ -361,6 +373,8 @@ view.appendTo('#container');
 view.append();
 // Remove the view from the document
 view.remove();</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/J7ar5/">jsFiddle</a>, <a target="_blank" href="http://jsfiddle.net/workmanw/Ld7fH/">jsFiddle2</a></div>
       </article>
       
       
