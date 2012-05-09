@@ -68,7 +68,6 @@
 			<!-- *************************************************** -->
       <article>
 				<h3>Overview</h3>
-
       	<ul>
 					<li>Core fundaments</li>
 					<li>Handlebars Templates</li>
@@ -83,7 +82,23 @@
 						<li>Basics (Ember.Object)</li>
 						<li>Ember Data</li>
 					</ul>
+					<li>Miscellaneous Stuff</li>
 				</ul>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  What is Ember?                                     -->
+			<!-- *************************************************** -->
+      <article class="smaller">
+				<h3>What is Ember.js?</h3>
+        <q>
+          Ember is a JavaScript framework for creating ambitious web applications 
+          that eliminates boilerplate and provides a standard application architecture.
+        </q>
+        <div class='author'>
+          emberjs.com
+        </div>
       </article>
 
 
@@ -107,6 +122,8 @@ var person = Ember.Object.create({
 person.get('firstName'); // Alan
 person.get('lastName');  // Turing
 				</pre>
+				
+				<div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/P2rwt/">jsFiddle</a></div>
       </article>
 
 
@@ -676,7 +693,7 @@ MyApp.MyView = Ember.View.extend({
 			<!-- *************************************************** -->
       <article>
         <h1 style="text-align: center">Meditating Controllers</h1>
-        <p style="text-align: center; padding-right: 30px;">(Ember.ArrayController and Ember.Object)</p>
+        <p style="text-align: center; padding-right: 30px;">(Ember.ArrayProxy and Ember.Object)</p>
       </article>
       
       
@@ -691,19 +708,21 @@ MyApp.MyView = Ember.View.extend({
         </ul>
         
         <pre class="prettyprint">
-var users = [
+MyApp.users = [
   { userName: 'workmanw', lastName: 'Workman', firstName: 'Wesley' },
   { userName: 'workmand', lastName: 'Workman', firstName: 'Dania' }
 ];
-App.userListController = Ember.ArrayController.create();
-App.userListController.set('content', users);</pre>
+MyApp.userListController = Ember.ArrayProxy.create();
+MyApp.userListController.set('content', MyApp.users);
 
-<pre class="prettyprint">
-&lt;script type="text/x-handlebars"&gt;
-  {{#each App.userListController}}
-    ({{userName}}) - {{lastName}}, {{firstName}}&lt;br/&gt;
-  {{/each}}
-&lt;/script&gt;</pre>
+MyApp.userListController.get('length'); // 2
+MyApp.userListController.pushObject(
+  { lastName: 'Turning', firstName: 'Alan' });
+
+// The users list has been updated
+MyApp.users.get('length'); // 3 </pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/PLKWj/">jsFiddle</a></div>
       </article>
       
       
@@ -717,7 +736,7 @@ App.userListController.set('content', users);</pre>
         </ul>
         
         <pre class="prettyprint">
-App.todosController = Ember.Object.create({
+MyApp.todosController = Ember.Object.create({
   todos: [
     Ember.Object.create({ isDone: false })
   ],
@@ -729,8 +748,10 @@ App.todosController = Ember.Object.create({
 
 <pre class="prettyprint">
 &lt;script type="text/x-handlebars"&gt;
-  Remaining Todos: {{App.todosController.remaining}}
+  Remaining Todos: {{MyApp.todosController.remaining}}
 &lt;/script&gt;</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/ZsLY8/">jsFiddle</a></div>
       </article>
       
       
@@ -766,7 +787,7 @@ App.todosController = Ember.Object.create({
         <p class="sub-heading">Basic example of a state manager.</p>
 
         <pre class="prettyprint">
-App.appStates = Ember.StateManager.create({
+MyApp.appStates = Ember.StateManager.create({
   initialState: 'aState',
   
   aState: Ember.State.create({
@@ -780,7 +801,9 @@ App.appStates = Ember.StateManager.create({
   bState: Ember.State.create({})
 });
 
-App.appStates.send('anAction', { value: 10 });​</pre>
+MyApp.appStates.send('anAction', { value: 10 });​</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/ZJgxM/">jsFiddle</a></div>
       </article>
 
 
@@ -791,11 +814,11 @@ App.appStates.send('anAction', { value: 10 });​</pre>
         <h3>Ember.StateManager - Login Manager</h3>
 
         <pre class="prettyprint" style="font-size: 15px; line-height: 20px; letter-spacing: 0; margin-top: 18px">
-App.stateManager = Ember.StateManager.create({
+MyApp.stateManager = Ember.StateManager.create({
   initialState: 'loggedOut',
   loggedOut: Ember.ViewState.create({
     initialState: 'awaitingCredentials',
-    <strong>view: 'App.LoginView',</strong>
+    <strong>view: 'MyApp.LoginView',</strong>
 
     <strong>awaitingCredentials:</strong> Ember.State.create({
       authenticate: function(manager, context) {
@@ -815,7 +838,9 @@ App.stateManager = Ember.StateManager.create({
     })
   })
 });
-App.stateManager.send('authenticate');​</pre>
+MyApp.stateManager.send('authenticate');​</pre>
+
+        <div class="jsfiddle"><a target="_blank" href="http://jsfiddle.net/workmanw/2znn2/">jsFiddle - Login Example</a></div>
       </article>
 
 
@@ -879,6 +904,23 @@ var alan = App.Person.create({ firstName: 'alan', lastName: 'turing' });</pre>
       
       
       <!-- *************************************************** -->
+			<!--  Buildtools                                         -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Buildtools</h3>
+        
+        <p>There are two options when it comes to Ember buildtools.</p>
+        <ul>
+          <li><a target="_blank" href="http://www.getbpm.org">BPM</a>: Browser package manager. Original buildtools.</li>
+          <li><a target="_blank" href="https://github.com/livingsocial/rake-pipeline">rake-pipeline</a>: Gaining traction. Created by "Living Social".</li>
+          <li><a target="_blank" href="https://github.com/emberjs/ember-gem">ember-gem</a>: Brand new. Official Ember buildtools. Still needs some work.</li>
+        </ul>
+        
+        <p style="padding-top: 60px;">Buildtools are optional. They mostly benefit large applications.</p>
+      </article>
+      
+      
+      <!-- *************************************************** -->
 			<!--  More Ember references                              -->
 			<!-- *************************************************** -->
       <article>
@@ -890,6 +932,21 @@ var alan = App.Person.create({ firstName: 'alan', lastName: 'turing' });</pre>
           <li><a target="_blank" href="http://stackoverflow.com/questions/tagged/emberjs">stackoverflow.com</a>: Official location for Ember.js Q&A.</li>
           <li><a target="_blank" href="http://emberjs.tumblr.com">emberjs.tumblr.com</a>: Ember blog links.</li>
           <li><a target="_blank" href="https://github.com/emberjs-addons">github.com/emberjs-addons</a>: Random ember projects.</li>
+        </ul>
+      </article>
+      
+      
+      <!-- *************************************************** -->
+			<!--  Example Apps                                       -->
+			<!-- *************************************************** -->
+      <article>
+        <h3>Example Apps</h3>
+        
+        <p>I put together a few basic apps to help get started with Ember.</p>
+        <ul>
+          <li><a target="_blank" href="http://jsfiddle.net/workmanw/G9wju/">Todos App</a>: Standard Todos app.</li>
+          <li><a target="_blank" href="http://jsfiddle.net/workmanw/2znn2/">StateManager Login/Logout</a>: Managing app state.</li>
+
         </ul>
       </article>
       
